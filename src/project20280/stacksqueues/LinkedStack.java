@@ -11,7 +11,7 @@ public class LinkedStack<E> implements Stack<E> {
     }
 
     public LinkedStack() {
-        // TODO
+        ll = new DoublyLinkedList<>();
     }
 
     @Override
@@ -26,22 +26,73 @@ public class LinkedStack<E> implements Stack<E> {
 
     @Override
     public void push(E e) {
-        // TODO
+        ll.addFirst(e);
     }
 
     @Override
     public E top() {
-        // TODO
-        return null;
+
+        return ll.first();
     }
 
     @Override
     public E pop() {
-        // TODO
-        return null;
+
+        return ll.removeFirst();
     }
 
     public String toString() {
         return ll.toString();
     }
+
+    /*
+        Pseudocode for implementing a Queue using 2 Stacks:
+
+        stack 1 (for enqueue)
+        stack 2 (for dequeue)
+
+        enqueue(e)
+            stack1.push(e)
+
+        dequeue()
+            //if outbox is empty, move elements to inbox (stack1)
+            if stack2.isEmpty()
+                while !stack1.isEmpty():
+                    stack2.push(stack1.pop())
+
+            // pop from outbox
+            if stack2.isEmpty():
+                return null
+
+
+            return stack2.pop()
+
+
+
+
+
+        Pseudocode for reversing a stack using two additional stacks:
+
+        Input: stack (to be reversed)
+        Output: (reversed) stack
+
+        Create stack 2
+        Create stack 3
+
+        // reverse elements by pushing into stack2
+        while stack !empty:
+            element = stack.pop
+            stack2.push(element)
+
+        // reverse back to original order
+        while stack2 !empty:
+            element = stack2.pop()
+            stack3.push(element)
+
+        // reverse back into original stack
+        while stack3 !empty:
+            element = stack3.pop()
+            stack.push(element)
+
+     */
 }

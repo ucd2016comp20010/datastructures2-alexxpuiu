@@ -111,6 +111,27 @@ class SinglyLinkedListTest {
     }
 
     @Test
+    void testMergeSorted() {
+        SinglyLinkedList<Integer> l1 = new SinglyLinkedList<>();
+        SinglyLinkedList<Integer> l2 = new SinglyLinkedList<>();
+
+        l1.addLast(1);
+        l1.addLast(3);
+        l1.addLast(5);
+        l1.addLast(7);
+        l2.addLast(2);
+        l2.addLast(4);
+        l2.addLast(5);
+        l2.addLast(5);
+        l2.addLast(6);
+        l2.addLast(8);
+        l2.addLast(10);
+
+        SinglyLinkedList<Integer> l3 = l1.mergeSorted(l1, l2);
+        assertEquals("[1, 2, 3, 4, 5, 5, 5, 6, 7, 8, 10]", l3.toString());
+    }
+
+    @Test
     void testToString() {
         List<Integer> ll = new SinglyLinkedList<Integer>();
         ll.addLast(1);

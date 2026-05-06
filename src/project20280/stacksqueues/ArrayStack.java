@@ -2,6 +2,9 @@ package project20280.stacksqueues;
 
 import project20280.interfaces.Stack;
 
+import java.util.EmptyStackException;
+import java.util.Scanner;
+
 public class ArrayStack<E> implements Stack<E> {
 
     /**
@@ -17,7 +20,7 @@ public class ArrayStack<E> implements Stack<E> {
     /**
      * Index of the top element of the stack in the array.
      */
-    private final int t = -1;                      // index of the top element in stack
+    private int t = -1;                      // index of the top element in stack
 
     /**
      * Constructs an empty stack using the default array capacity.
@@ -33,7 +36,7 @@ public class ArrayStack<E> implements Stack<E> {
      */
     @SuppressWarnings({"unchecked"})
     public ArrayStack(int capacity) {        // constructs stack with given capacity
-        // TODO
+        data = (E[]) new Object[capacity];
     }
 
     /**
@@ -64,7 +67,13 @@ public class ArrayStack<E> implements Stack<E> {
      */
     @Override
     public void push(E e) {
-        // TODO
+
+        if (size() == CAPACITY) {
+            throw new StackOverflowError();
+        }
+
+        t++;
+        data[t] = e;
     }
 
     /**
@@ -74,8 +83,10 @@ public class ArrayStack<E> implements Stack<E> {
      */
     @Override
     public E top() {
-        // TODO
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+        return data[t];
     }
 
     /**
@@ -85,8 +96,86 @@ public class ArrayStack<E> implements Stack<E> {
      */
     @Override
     public E pop() {
-        // TODO
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+
+        E top = data[t];
+        data[t] = null;
+        t--;
+        return top;
+    }
+
+    public static String convertToBinary(long dec_num) {
+        if (dec_num == 0) {
+            return "0";
+        }
+
+        Stack<Integer> stack = new ArrayStack<>();
+
+        while (dec_num != 0) {
+            int remainder = (int) (dec_num % 2);
+            stack.push(remainder);
+            dec_num /= 2;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        while (!stack.isEmpty()) {
+            sb.append(stack.pop());
+        }
+
+        return sb.toString();
+
+        /*
+            to extend this to multiple bases, you would simply create a variable "base" that
+            the user specifies when calling the method, to replace instances of 2 in the method
+         */
+    }
+
+    public static boolean checkParentheses(String in) {
+        Stack<Character> stack = new ArrayStack<>();
+        Scanner scanner = new Scanner(in);
+        scanner.useDelimiter("");
+
+        int position = 0;
+        while (scanner.hasNext()) {
+            char ch = scanner.next().charAt(0);
+
+            if (ch == '(' || ch == '[' || ch == '{') {
+                stack.push(ch);
+            }
+            else if (ch == ')' || ch == ']' || ch == '}') {
+                if (stack.isEmpty()) {
+                    System.out.println("Error: Missing left (opening) delimiter for '" + ch + "' at position " + position);
+                    scanner.close();
+                    return false;
+                }
+
+                char left = stack.pop();
+                if (!matches(left, ch)) {
+                    System.out.println("Error: Delimiters '" + left + "' and '" + ch +
+                            "' do not match at position " + position);
+                    scanner.close();
+                    return false;
+                }
+            }
+            position++;
+        }
+
+        if (!stack.isEmpty()) {
+            System.out.println("Error: Missing right (closing) delimiter for '" + stack.top() + "'");
+            scanner.close();
+            return false;
+        }
+
+        return true;
+    }
+
+    // helper function for checkParentheses
+    private static boolean matches(char left, char right) {
+        return left == '(' && right == ')'
+                || left == '[' && right == ']'
+                || left == '{' && right == '}';
     }
 
     /**
@@ -132,3 +221,5 @@ public class ArrayStack<E> implements Stack<E> {
         System.out.println(S);
     }
 }
+
+

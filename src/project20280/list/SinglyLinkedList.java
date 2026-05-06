@@ -2,15 +2,15 @@ package project20280.list;
 
 import project20280.interfaces.List;
 
-// test commit ========
-
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
 public class SinglyLinkedList<E> implements List<E> {
 
     private static class Node<E> {
 
-        private final E element;            // reference to the element stored at this node
+        private E element;            // reference to the element stored at this node
 
         /**
          * A reference to the subsequent node in the list
@@ -24,7 +24,8 @@ public class SinglyLinkedList<E> implements List<E> {
          * @param n reference to a node that should follow the new node
          */
         public Node(E e, Node<E> n) {
-            // TODO
+            element  = e;
+            next = n;
         }
 
         // Accessor methods
@@ -35,7 +36,7 @@ public class SinglyLinkedList<E> implements List<E> {
          * @return the element stored at the node
          */
         public E getElement() {
-            return null;
+            return element;
         }
 
         /**
@@ -44,8 +45,7 @@ public class SinglyLinkedList<E> implements List<E> {
          * @return the following node
          */
         public Node<E> getNext() {
-            // TODO
-            return null;
+            return next;
         }
 
         // Modifier methods
@@ -56,7 +56,7 @@ public class SinglyLinkedList<E> implements List<E> {
          * @param n the node that should follow this one
          */
         public void setNext(Node<E> n) {
-            // TODO
+            next = n;
         }
     } //----------- end of nested Node class -----------
 
@@ -76,54 +76,167 @@ public class SinglyLinkedList<E> implements List<E> {
 
     //@Override
     public int size() {
-        // TODO
-        return 0;
+        return size;
     }
 
     //@Override
     public boolean isEmpty() {
-        // TODO
-        return false;
+        return size == 0;
     }
 
     @Override
     public E get(int position) {
-        // TODO
-        return null;
+
+        if (position < 0 || position >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        Node<E> curr = head;
+        for (int i = 0; i < position; i++) {
+            curr = curr.getNext();
+        }
+        return curr.getElement();
     }
 
     @Override
     public void add(int position, E e) {
-        // TODO
+
+        if (position < 0 || position > size) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        if (position == 0) {
+            addFirst(e);
+            return;
+        }
+
+        Node<E> curr = head;
+        for (int i = 0; i < position - 1; i++) {
+            curr = curr.getNext();
+        }
+
+        curr.setNext(new Node<>(e, curr.getNext()));
+        size++;
     }
 
 
     @Override
     public void addFirst(E e) {
-        // TODO
+
+        head = new Node<>(e, head);
+        size++;
     }
 
     @Override
     public void addLast(E e) {
-        // TODO
+
+        if (isEmpty()) {
+            addFirst(e);
+            return;
+        }
+
+        Node<E> curr = head;
+        while (curr.getNext() != null) {
+            curr = curr.getNext();
+        }
+        curr.setNext(new Node<>(e, null));
+        size++;
     }
 
     @Override
     public E remove(int position) {
-        // TODO
-        return null;
+
+        if (position < 0 || position >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        if (position == 0) {
+            return removeFirst();
+        }
+
+        Node<E> curr = head;
+        for (int i = 0; i < position - 1; i++) {
+            curr = curr.getNext();
+        }
+
+        E removed = curr.getNext().getElement();
+        curr.setNext(curr.getNext().getNext());
+        size--;
+        return removed;
     }
 
     @Override
     public E removeFirst() {
-        // TODO
-        return null;
+
+        if (isEmpty()) {
+            return null;
+        }
+
+        E removed = head.getElement();
+        head = head.getNext();
+        size--;
+
+        return removed;
     }
 
     @Override
     public E removeLast() {
-        // TODO
-        return null;
+
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        }
+
+        if (size == 1) {
+            return removeFirst();
+        }
+
+        Node<E> curr = head;
+        while (curr.getNext().getNext() != null) {
+            curr = curr.getNext();
+        }
+
+        E removed = curr.getNext().getElement();
+        curr.setNext(null);
+        size--;
+        return removed;
+    }
+
+    public SinglyLinkedList<E> mergeSorted(SinglyLinkedList<E> l1, SinglyLinkedList<E> l2) {
+        SinglyLinkedList<E> merged = new SinglyLinkedList<>();
+
+        int position1 = 0;
+        int position2 = 0;
+        while (position1 < l1.size() && position2 < l2.size()) {
+            Comparable<E> el1 = (Comparable<E>) l1.get(position1);
+            E el2 = (E) l2.get(position2);
+
+            if (el1.compareTo(el2) < 0) {
+                merged.addLast(l1.get(position1));
+                position1++;
+            }
+            else if (el1.compareTo(el2) > 0) {
+                merged.addLast(el2);
+                position2++;
+            }
+            else {
+                merged.addLast(l1.get(position1));
+                position1++;
+                merged.addLast(l2.get(position2));
+                position2++;
+            }
+        }
+
+        while (position1 < l1.size()) {
+            merged.addLast(l1.get(position1));
+            position1++;
+        }
+
+        while (position2 < l2.size()) {
+            merged.addLast(l2.get(position2));
+            position2++;
+        }
+
+        return merged;
     }
 
     //@Override
@@ -179,5 +292,56 @@ public class SinglyLinkedList<E> implements List<E> {
         ll.remove(5);
         System.out.println(ll);
 
+        ll.reverse();
+        System.out.println(ll);
+
+        System.out.println("\nTRIBONACCI:");
+        System.out.println(tribonacci(9));
+        //9th term is 44
+
+        System.out.println("\nMcCarthy91:");
+        System.out.println(M(87));
+    }
+
+    public static long tribonacci(int n) {
+        if (n == 0 || n == 1) return 0;
+        if (n == 2) return 1;
+
+        return tribonacci(n - 1) + tribonacci(n - 2) + tribonacci(n - 3);
+    }
+
+    //McCarthy nested recursion method
+    public static int M(int n) {
+        if (n > 100) {
+            return n - 10;
+        } else {
+            return M(M(n + 11));
+        }
+    }
+
+    public void reverse() {
+        Node<E> prev = null;
+        Node<E> curr = head;
+
+        while (curr != null) {
+            Node<E> next = curr.getNext();
+            curr.setNext(prev);
+            prev = curr;
+            curr = next;
+        }
+
+        head = prev;
+    }
+
+    public SinglyLinkedList<E> recursiveCopy() {
+        SinglyLinkedList<E> copy = new SinglyLinkedList<>();
+        copyHelper(head, copy);
+        return copy;
+    }
+
+    private void copyHelper(Node<E> node, SinglyLinkedList<E> copy) {
+        if (node == null) return;           // empty list
+        copy.addLast(node.getElement());    // add head
+        copyHelper(node.getNext(), copy);   // recursive
     }
 }
